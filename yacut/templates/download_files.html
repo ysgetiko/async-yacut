@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  <section class="container my-5 px-4">
+    <h1 class="text-center"><span style="color:red">Ya</span>Cut</h1>
+    <p class="text-center my-4">
+      Загрузите файлы и получите на них короткие ссылки
+    </p>
+    <div class="container">
+      <div class="row my-3">
+        <div class="col-sm">
+        </div>
+        <div class="col-sm">
+          <!-- Блок для сообщений flash -->
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          <form method="POST" enctype="multipart/form-data" novalidate>
+            {{ form.csrf_token }}
+            <div>
+              <div>
+                {{ form.files(multiple="multiple",class="form-control form-control-lg py-2 mb-3", placeholder=form.files.label.text) }}
+                {% if form.files.errors %}
+                  <p class="text-danger"><span style="color:red">
+                    {% for error in form.files.errors %}
+                      {{ error }}<br>
+                    {% endfor %}
+                  </span></p>
+                {% endif %}
+              </div>
+              {{ form.submit(class="btn btn-primary", placeholder=form.submit.label.text) }}
+            </div>
+          </form>
+        </div>
+        <div class="col-sm"></div>
+      </div>
+    </div>
+
+    <div class="py-3 mb-3">
+      <div class="col-sm">
+        <p class="text-center">
+          {% for dict in short_for_download %}
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+              <div class="flex-shrink-0 me-3 text-center" style="width: 200px;">
+                {{ dict['filename'] }}
+              </div>
+              <div class="flex-grow-1 text-center">
+                <a href="{{ dict['short'] }}" target="_blank" class="d-block text-truncate">
+                  {{ dict['short'] }}
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </p>
+      </div>
+      <div class="col-sm">
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
