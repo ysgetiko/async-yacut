@@ -1,12 +1,12 @@
 from datetime import datetime
 from re import match
-from yacut import db
-from .constants import (MAX_LENGTH_ORIGINAL,
-                        MAX_LENGTH_SHORT,
-                        MAX_ATTEMPTS,
-                        MAX_SHORT
-                        )
+
 from flask import url_for
+
+from yacut import db
+
+from .constants import (MAX_ATTEMPTS, MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT,
+                        MAX_SHORT)
 
 
 class URLMap(db.Model):
@@ -20,17 +20,20 @@ class URLMap(db.Model):
         """Генерация уникального короткого кода переменной длины"""
         import random
         import string
+
         for _ in range(MAX_ATTEMPTS):
             length = MAX_SHORT
-            code = ''.join(
+            code = "".join(
                 random.choices(string.ascii_letters + string.digits, k=length)
             )
 
             if URLMap.get(code) is None or code != "files":
                 return code
 
-
-        raise RuntimeError("Не удалось сгенерировать уникальный короткий код после максимального числа попыток")
+        raise RuntimeError(
+            "Не удалось сгенерировать уникальный короткий "
+            "код после максимального числа попыток"
+        )
 
     @staticmethod
     def create(original, short=None, validation=True):
@@ -57,15 +60,13 @@ class URLMap(db.Model):
     def _validate_short_code(short):
         """Валидация короткого кода."""
         if len(short) > MAX_LENGTH_SHORT:
-            raise ValueError(
-                f"Указано недопустимое имя для короткой ссылки"
-            )
-        if not match(r'^[a-zA-Z0-9]+$', short):
-            raise ValueError(
-                "Указано недопустимое имя для короткой ссылки"
-            )
+            raise ValueError("Указано недопустимое имя для короткой ссылки")
+        if not match(r"^[a-zA-Z0-9]+$", short):
+            raise ValueError("Указано недопустимое имя для короткой ссылки")
         if URLMap.get(short) is not None:
-            raise ValueError("Предложенный вариант короткой ссылки уже существует.")
+            raise ValueError(
+                "Предложенный вариант короткой ссылки уже существует."
+            )
 
     @staticmethod
     def _validate_original_url(original):
@@ -80,9 +81,5 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     def get_short_url(self):
-        print('get_short_url')
-        return url_for(
-            'short_url',
-            short=self.short,
-            _external=True
-        )
+        print("get_short_url")
+        return url_for("short_url", short=self.short, _external=True)

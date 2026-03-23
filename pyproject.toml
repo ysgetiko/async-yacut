@@ -1,0 +1,12 @@
+[tool.isort]
+src_paths = ["async-yacut]"]
+known_first_party = ["yacut"]
+skip = ["tests", ".venv", "venv"]
+
+[tool.black]
+line-length = 79
+extend-exclude = '''
+(
+  tests
+)
+'''
