@@ -73,16 +73,11 @@ async def test_upload_files(client, mock_server, monkeypatch):
             'быть сокращены с использованием сервиса для генерации коротких '
             'ссылок.'
         )
-        print(TEST_BASE_URL)
-        print(response_data)
-        if TEST_BASE_URL in response_data:
-            print('ЕСТЬ!!!!!!')
         assert TEST_BASE_URL in response_data, (
             'Убедитесь, что после отправки корректно заполненной формы для '
             f'загрузки файлов на странице `{FILES_URL}` выводятся ссылки на '
             'загруженные файлы.'
         )
-        assert 2 in response_data
         assert all(
             [name in response_data for name in file_names]
         ), (
