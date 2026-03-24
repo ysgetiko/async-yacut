@@ -12,71 +12,51 @@
       <div class="row my-3">
         <div class="col-sm"></div>
         <div class="col-sm">
-          <!-- Блок для сообщений flash -->
-          {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-
           <form method="POST" novalidate enctype="multipart/form-data">
             {{ form.csrf_token }}
             <div class="mb-3">
-              {{ form.original_link.label(class="form-label") }}
               {{ form.original_link(
                 class="form-control form-control-lg py-3 mb-3" +
                 (" is-invalid" if form.original_link.errors else ""),
                 placeholder=form.original_link.label.text
               ) }}
-              {% if form.original_link.errors %}
-                {% for error in form.original_link.errors %}
-                  <div class="invalid-feedback">{{ error }}</div>
-                {% endfor %}
-              {% endif %}
+              {% for error in form.original_link.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
             </div>
             <div class="mb-3">
-              {{ form.custom_id.label(class="form-label") }}
               {{ form.custom_id(
                 class="form-control form-control-lg py-3 mb-3" +
                 (" is-invalid" if form.custom_id.errors else ""),
                 placeholder=form.custom_id.label.text
               ) }}
-              {% if form.custom_id.errors %}
-                {% for error in form.custom_id.errors %}
-                  <div class="invalid-feedback">{{ error }}</div>
-                {% endfor %}
-              {% endif %}
+              {% for error in form.custom_id.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
             </div>
-
             {{ form.submit(class="btn btn-primary form-control-lg py-3") }}
           </form>
         </div>
         <div class="col-sm"></div>
       </div>
     </div>
-
     <!-- Блок для отображения короткой ссылки -->
-    <div class="container">
-      <div class="row">
-        <div class="col-sm"></div>
-        <div class="col-sm">
-          {% if short %}
-            <p class="text-center mt-4">
-              <h5 class="text-center">
-                Ваша новая ссылка готова:<br>
-                <a href="{{ short }}" target="_blank">{{ short }}</a>
-              </h5>
-            </p>
-          {% endif %}
+    {% if short %}
+      <div class="container">
+        <div class="row">
+          <div class="col-sm"></div>
+          <div class="col-sm">
+              <p class="text-center mt-4">
+                <h5 class="text-center">
+                  Ваша новая ссылка готова:<br>
+                  <a href="{{ short }}" target="_blank">{{ short }}</a>
+                </h5>
+              </p>
+          </div>
+          <div class="col-sm"></div>
         </div>
-        <div class="col-sm"></div>
       </div>
-    </div>
+    {% endif %}
   </section>
 </main>
 

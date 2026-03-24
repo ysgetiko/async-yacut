@@ -4,41 +4,39 @@ from wtforms import StringField, SubmitField, URLField
 from wtforms.validators import (DataRequired, Length, Optional, Regexp,
                                 ValidationError)
 
-from .constants import MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT
-from .models import URLMap
+from yacut.constants import MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT, CUSTOM_ID_REGEX
+from yacut.models import URLMap
+from yacut.constants import FormMessages, InvalidMessages
+
 
 
 class URLMapForm(FlaskForm):
     original_link = URLField(
-        "Длинная ссылка",
+        FormMessages.ORIGINAL_LINK_LABEL,
         validators=[
-            DataRequired(message="Обязательное поле"),
-            Length(1, MAX_LENGTH_ORIGINAL),
+            DataRequired(message=FormMessages.REQUIRED),
+            Length(max=MAX_LENGTH_ORIGINAL),
         ],
     )
     custom_id = StringField(
-        "Ваш вариант короткой ссылки",
+        FormMessages.CUSTOM_ID_LABEL,
         validators=[
             Length(max=MAX_LENGTH_SHORT),
-            Regexp(
-                r"^[a-zA-Z0-9]+$",
-                message="Поле может содержать только латинские буквы и цифры",
+            Regexp(CUSTOM_ID_REGEX,
+                message=InvalidMessages.CONSTRAINS_SHORT,
             ),
             Optional(),
         ],
     )
-    submit = SubmitField("Добавить")
+    submit = SubmitField(FormMessages.SHORT_SUBMIT)
 
     def validate_custom_id(self, field):
-        if field.data:
-            if URLMap.get(field.data) or field.data == "files":
-                raise ValidationError(
-                    "Предложенный вариант короткой ссылки уже существует."
-                )
+            if field.data == InvalidMessages.CONSTRAINS_NAME or URLMap.get(field.data):
+                raise ValidationError(InvalidMessages.SHORT_EXISTS)
 
 
 class UploadForm(FlaskForm):
     files = MultipleFileField(
-        "Выбрать файлы", validators=[FileRequired(message="Обязательное поле")]
+        FormMessages.FILES_LABEL, validators=[FileRequired(message=FormMessages.REQUIRED)]
     )
-    submit = SubmitField("Загрузить")
+    submit = SubmitField(FormMessages.FILES_SUBMIT)

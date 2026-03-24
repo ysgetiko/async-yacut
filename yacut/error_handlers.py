@@ -6,14 +6,11 @@ from . import app, db
 
 
 class InvalidAPIUsage(Exception):
-    # Если статус-код для ответа API не указан, вернётся код 400.
-    status_code = 400
 
-    def __init__(self, message, status_code=None):
+    def __init__(self, message, status_code=HTTPStatus.BAD_REQUEST):
         super().__init__()
         self.message = message
-        if status_code is not None:
-            self.status_code = status_code
+        self.status_code = status_code
 
     # Метод для сериализации переданного сообщения об ошибке.
     def to_dict(self):

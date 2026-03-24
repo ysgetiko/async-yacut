@@ -1,12 +1,15 @@
 from datetime import datetime
 from re import match
+import random
+import string
+from sqlalchemy.exc import SQLAlchemyError
 
 from flask import url_for
 
 from yacut import db
-
-from .constants import (MAX_ATTEMPTS, MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT,
-                        MAX_SHORT)
+from yacut.constants import (MAX_ATTEMPTS, MAX_LENGTH_ORIGINAL,
+                             MAX_LENGTH_SHORT, MAX_SHORT, ALLOWED_FOR_SHORT)
+from yacut.constants import InvalidMessages
 
 
 class URLMap(db.Model):
@@ -16,36 +19,28 @@ class URLMap(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
 
     @staticmethod
-    def get_unique_short_id():
+    def get_unique_short():
         """Генерация уникального короткого кода переменной длины"""
-        import random
-        import string
 
         for _ in range(MAX_ATTEMPTS):
-            length = MAX_SHORT
             code = "".join(
-                random.choices(string.ascii_letters + string.digits, k=length)
+                random.choices(ALLOWED_FOR_SHORT, k=MAX_SHORT)
             )
 
-            if URLMap.get(code) is None or code != "files":
+            if code != InvalidMessages.CONSTRAINS_NAME or URLMap.get(code) is None:
                 return code
 
-        raise RuntimeError(
-            "Не удалось сгенерировать уникальный короткий "
-            "код после максимального числа попыток"
-        )
+        raise RuntimeError(InvalidMessages.ERROR_RUNTIME.format(field=MAX_ATTEMPTS))
 
     @staticmethod
     def create(original, short=None, validation=True):
-        from sqlalchemy.exc import SQLAlchemyError
-
         if validation:
             if short:
                 URLMap._validate_short_code(short)
             URLMap._validate_original_url(original)
 
         if not short:
-            short = URLMap.get_unique_short_id()
+            short = URLMap.get_unique_short()
 
         try:
             url_map = URLMap(original=original, short=short)
@@ -54,32 +49,26 @@ class URLMap(db.Model):
             return url_map
         except SQLAlchemyError as e:
             db.session.rollback()
-            raise RuntimeError(f"Ошибка при сохранении в БД: {str(e)}") from e
+            raise RuntimeError(InvalidMessages.ERROR_DB.format(field=str(e))) from e
 
     @staticmethod
     def _validate_short_code(short):
         """Валидация короткого кода."""
-        if len(short) > MAX_LENGTH_SHORT:
-            raise ValueError("Указано недопустимое имя для короткой ссылки")
-        if not match(r"^[a-zA-Z0-9]+$", short):
-            raise ValueError("Указано недопустимое имя для короткой ссылки")
+        if len(short) > MAX_LENGTH_SHORT or not match(r"^[a-zA-Z0-9]+$", short):
+            raise ValueError(InvalidMessages.INVALID_SHORT)
         if URLMap.get(short) is not None:
             raise ValueError(
-                "Предложенный вариант короткой ссылки уже существует."
-            )
+                InvalidMessages.SHORT_EXISTS)
 
     @staticmethod
     def _validate_original_url(original):
         """Валидация оригинальной ссылки."""
         if len(original) > MAX_LENGTH_ORIGINAL:
-            raise ValueError(
-                f"Ссылка не должна превышать {MAX_LENGTH_ORIGINAL} символов."
-            )
+            raise ValueError(InvalidMessages.ERROR_SHORT_LENGTH)
 
     @staticmethod
     def get(short):
         return URLMap.query.filter_by(short=short).first()
 
     def get_short_url(self):
-        print("get_short_url")
         return url_for("short_url", short=self.short, _external=True)

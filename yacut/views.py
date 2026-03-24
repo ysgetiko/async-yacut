@@ -2,10 +2,12 @@ from http import HTTPStatus
 
 from flask import abort, flash, redirect, render_template, request
 
-from . import app
-from .forms import UploadForm, URLMapForm
-from .models import URLMap
-from .yadisk import async_upload_files_to_yadisk
+from yacut import app
+from yacut.forms import UploadForm, URLMapForm
+from yacut.models import URLMap
+from yacut.yadisk import async_upload_files_to_yadisk
+from yacut.constants import InvalidMessages
+
 
 
 @app.route("/<short>")
@@ -48,9 +50,7 @@ async def upload_files_view():
 
                 # Проверяем, что загрузка прошла успешно и есть URL
                 if uploaded_files_url is None or not uploaded_files_url:
-                    flash(
-                        "Не удалось загрузить файлы на Яндекс.Диск.", "error"
-                    )
+                    flash(InvalidMessages.ERROR_UPLOAD, "error")
                     return render_template("download_files.html", form=form)
 
                 # Создаём короткие ссылки для каждого файла
@@ -63,9 +63,10 @@ async def upload_files_view():
                         )
                     except (ValueError, RuntimeError) as e:
                         flash(
-                            "Ошибка создания короткой ссылки для "
-                            f"{file.filename}: {str(e)}",
-                            "error",
+                            InvalidMessages.ERROR_SHORT_CREATE.format(
+                                field=file.filename,
+                                field_2=str(e)
+                            ),"error"
                         )
                         return render_template(
                             "download_files.html", form=form
@@ -81,7 +82,7 @@ async def upload_files_view():
                 return render_template("download_files.html", form=form)
             except Exception as e:
                 flash(
-                    "Произошла ошибка при загрузке файлов: " f"{str(e)}",
+                    InvalidMessages.ERROR_UPLOAD,
                     "error",
                 )
                 return render_template("download_files.html", form=form)
