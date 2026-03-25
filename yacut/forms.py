@@ -1,11 +1,21 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, MultipleFileField
 from wtforms import StringField, SubmitField, URLField
-from wtforms.validators import (DataRequired, Length, Optional, Regexp,
-                                ValidationError)
+from wtforms.validators import (
+    DataRequired,
+    Length,
+    Optional,
+    Regexp,
+    ValidationError,
+)
 
-from yacut.constants import (CUSTOM_ID_REGEX, MAX_LENGTH_ORIGINAL,
-                             MAX_LENGTH_SHORT, FormMessages, InvalidMessages)
+from yacut.constants import (
+    CUSTOM_ID_REGEX,
+    MAX_LENGTH_ORIGINAL,
+    MAX_LENGTH_SHORT,
+    FormMessages,
+    InvalidMessages,
+)
 from yacut.models import URLMap
 
 

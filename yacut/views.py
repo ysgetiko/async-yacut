@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask import abort, flash, redirect, render_template, request
+from flask import abort, flash, redirect, render_template
 
 from yacut import app
 from yacut.constants import InvalidMessages
@@ -54,7 +54,7 @@ async def upload_files_view():
         short_for_download = [
             {
                 "filename": file.filename,
-                "short": URLMap.create(original=original_link).get_short_url()
+                "short": URLMap.create(original=original_link).get_short_url(),
             }
             for file, original_link in zip(form.files.data, uploaded_files_url)
         ]
@@ -64,7 +64,7 @@ async def upload_files_view():
             short_for_download=short_for_download,
         )
 
-    except Exception as e:
+    except Exception:
         flash(
             InvalidMessages.ERROR_UPLOAD,
             "error",

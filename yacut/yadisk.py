@@ -1,10 +1,9 @@
 import asyncio
 from http import HTTPStatus
-from typing import List, Optional, Any, Union
+from typing import Any, List, Optional, Union
 from urllib.parse import unquote
 
 import aiohttp
-from flask import flash
 from settings import Config
 
 from yacut import app

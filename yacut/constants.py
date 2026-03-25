@@ -8,7 +8,7 @@ MAX_SHORT = 6
 
 CUSTOM_ID_REGEX = re.compile(r"^[a-zA-Z0-9]+$")
 ALLOWED_FOR_SHORT = string.ascii_letters + string.digits
-REDIRECT_FOR_SHORT = 'short_url'
+REDIRECT_FOR_SHORT = "short_url"
 
 
 class InvalidMessages:

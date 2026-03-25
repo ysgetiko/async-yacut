@@ -1,15 +1,20 @@
 import random
-import string
 from datetime import datetime
 from re import match
 
 from flask import url_for
-from sqlalchemy.exc import SQLAlchemyError
 
 from yacut import db
-from yacut.constants import (ALLOWED_FOR_SHORT, CUSTOM_ID_REGEX, MAX_ATTEMPTS,
-                             MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT, MAX_SHORT,
-                             REDIRECT_FOR_SHORT, InvalidMessages)
+from yacut.constants import (
+    ALLOWED_FOR_SHORT,
+    CUSTOM_ID_REGEX,
+    MAX_ATTEMPTS,
+    MAX_LENGTH_ORIGINAL,
+    MAX_LENGTH_SHORT,
+    MAX_SHORT,
+    REDIRECT_FOR_SHORT,
+    InvalidMessages,
+)
 
 
 class URLMap(db.Model):
