@@ -1,5 +1,3 @@
-import re
-
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, MultipleFileField
 from wtforms import StringField, SubmitField, URLField
@@ -12,10 +10,10 @@ from wtforms.validators import (
 )
 
 from yacut.constants import (
-    ALLOWED_FOR_SHORT,
     FORBIDDEN_SHORT,
     MAX_LENGTH_ORIGINAL,
     MAX_LENGTH_SHORT,
+    SHORT_REGEX,
     FormMessages,
     InvalidMessages,
 )
@@ -35,7 +33,7 @@ class URLMapForm(FlaskForm):
         validators=[
             Length(max=MAX_LENGTH_SHORT),
             Regexp(
-                re.compile(f"^[{re.escape(ALLOWED_FOR_SHORT)}]+$"),
+                SHORT_REGEX,
                 message=InvalidMessages.CONSTRAINS_SHORT,
             ),
             Optional(),

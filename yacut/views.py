@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from flask import abort, flash, redirect, render_template
 
-from yacut import app
+from yacut import app, db
 from yacut.constants import REDIRECT_FOR_SHORT, InvalidMessages
 from yacut.forms import UploadForm, URLMapForm
 from yacut.models import URLMap
@@ -33,7 +33,6 @@ def short_url_view():
             short=url_map.get_short_url(),
         )
     except (ValueError, RuntimeError) as e:
-        # Откатываем транзакцию при ошибке
         flash(str(e))
         return render_template("index.html", form=form)
 
@@ -46,24 +45,24 @@ async def upload_files_view():
 
     try:
         # Загружаем файлы на Яндекс.Диск
-        urls_for_upload_files = await async_upload_files_to_yadisk(
-            form.files.data
-        )
+        urls = await async_upload_files_to_yadisk(form.files.data)
     except Exception as e:
         flash(str(e))
         return render_template("download_files.html", form=form)
 
     try:
-        # Создаём короткие ссылки для каждого файла
-        shorts_link_for_download = [
-            {
-                "filename": file.filename,
-                "short": URLMap.create(original=original_link).get_short_url(),
-            }
-            for file, original_link in zip(
-                form.files.data, urls_for_upload_files
+        shorts_link_for_download = []
+        for file, original_link in zip(form.files.data, urls):
+            url_map = URLMap.create_batch(
+                original=original_link, skip_validation=True
             )
-        ]
+            shorts_link_for_download.append(
+                {
+                    "filename": file.filename,
+                    "short": url_map.get_short_url(),
+                }
+            )
+        db.session.commit()
         return render_template(
             "download_files.html",
             form=form,

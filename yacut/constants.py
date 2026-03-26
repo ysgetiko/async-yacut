@@ -1,3 +1,4 @@
+import re
 import string
 
 MAX_LENGTH_ORIGINAL = 4000
@@ -6,6 +7,7 @@ MAX_ATTEMPTS = 50
 MAX_SHORT = 6
 
 ALLOWED_FOR_SHORT = string.ascii_letters + string.digits
+SHORT_REGEX = re.compile(f"^[{re.escape(ALLOWED_FOR_SHORT)}]+$")
 FORBIDDEN_SHORT = "files"
 REDIRECT_FOR_SHORT = "short_url"
 
