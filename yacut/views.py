@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask import abort, flash, redirect, render_template
 
 from yacut import app, db
-from yacut.constants import InvalidMessages, REDIRECT_FOR_SHORT
+from yacut.constants import REDIRECT_FOR_SHORT, InvalidMessages
 from yacut.forms import UploadForm, URLMapForm
 from yacut.models import URLMap
 from yacut.yadisk import async_upload_files_to_yadisk
