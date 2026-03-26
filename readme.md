@@ -4,10 +4,8 @@
 
 ```
 git clone https://github.com/ysgetiko/async-yacut.git
-```
 
-```
-cd yacut
+cd async-yacut
 ```
 
 Cоздать и активировать виртуальное окружение:
@@ -59,12 +57,12 @@ flask db upgrade
 flask run
 ```
 ## Эндпоинты
-[http://127.0.0.1:5000/] - создание короткой ссылки
+[http://127.0.0.1:5000/](http://127.0.0.1:5000/) - создание короткой ссылки
 
-[http://127.0.0.1:5000/files/] - загрузка файлов на диск
+[http://127.0.0.1:5000/files/](http://127.0.0.1:5000/files/) - загрузка файлов на диск
 
 ### API
-POST [http://127.0.0.1:5000/api/id/ - создание короткой ссылки
+POST [http://127.0.0.1:5000/api/id/](http://127.0.0.1:5000/api/id/) - создание короткой ссылки
 
 
 GET [http://127.0.0.1:5000/api/id/<short>/](http://127.0.0.1:5000/api/id/<short>/) - получение оригинальной ссылки
@@ -84,4 +82,4 @@ GET [http://127.0.0.1:5000/api/id/<short>/](http://127.0.0.1:5000/api/id/<short>
 
 Email: zenia777@yandex.ru
 
-Репозиторий: https://github.com/ysgetiko
+Репозиторий: [https://github.com/ysgetiko](https://github.com/ysgetiko)

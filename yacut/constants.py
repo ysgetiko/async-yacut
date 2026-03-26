@@ -6,9 +6,9 @@ MAX_LENGTH_SHORT = 16
 MAX_ATTEMPTS = 50
 MAX_SHORT = 6
 
-CUSTOM_ID_REGEX = re.compile(r"^[a-zA-Z0-9]+$")
 ALLOWED_FOR_SHORT = string.ascii_letters + string.digits
-REDIRECT_FOR_SHORT = "short_url"
+REGEX_FOR_SHORT = re.compile(f"^[{re.escape(ALLOWED_FOR_SHORT)}]+$")
+FORBIDDEN_SHORT = "files"
 
 
 class InvalidMessages:
@@ -16,7 +16,6 @@ class InvalidMessages:
     ERROR_MISSING_REQUIRED_FIELD = '"{field}" является обязательным полем!'
     ERROR_NO_FOUND_ID = "Указанный id не найден"
     CONSTRAINS_SHORT = "Поле может содержать только латинские буквы и цифры"
-    CONSTRAINS_NAME = "files"
     INVALID_SHORT = "Указано недопустимое имя для короткой ссылки"
     SHORT_EXISTS = "Предложенный вариант короткой ссылки уже существует."
     ERROR_SHORT_CREATE = (
@@ -24,7 +23,7 @@ class InvalidMessages:
     )
     ERROR_RUNTIME = (
         "Не удалось сгенерировать уникальный короткий "
-        "код после максимального числа попыток {field}."
+        f"код после максимального числа попыток {MAX_ATTEMPTS}."
     )
     ERROR_DB = "Ошибка при сохранении в БД: {field}"
     ERROR_SHORT_LENGTH = (

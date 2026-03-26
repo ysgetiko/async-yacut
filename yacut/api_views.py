@@ -24,15 +24,17 @@ def create_short():
         )
 
     try:
-        url_map = URLMap.create(
-            original=data["url"], short=data.get("custom_id")
+        return (
+            jsonify(
+                {
+                    "url": data["url"],
+                    "short_link": URLMap.create(
+                        original=data["url"], short=data.get("custom_id")
+                    ).get_short_url(),
+                }
+            ),
+            HTTPStatus.CREATED,
         )
-
-        response_data = {
-            "url": data["url"],
-            "short_link": url_map.get_short_url(),
-        }
-        return jsonify(response_data), HTTPStatus.CREATED
 
     except ValueError as e:
         raise InvalidAPIUsage(str(e))
