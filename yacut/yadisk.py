@@ -66,7 +66,7 @@ async def _upload_file_content(
         response.raise_for_status()
         location_header = response.headers.get("Location")
         if not location_header:
-            raise ValueError(InvalidMessages.MISSING_ERROR)
+            raise ValueError(InvalidMessages.MISSING_HEADER)
         return unquote(location_header).replace("/disk", "")
 
 

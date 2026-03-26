@@ -46,6 +46,6 @@ def create_short():
 def get_url(short):
     if not (url_map := URLMap.get(short)):
         raise InvalidAPIUsage(
-            InvalidMessages.ERROR_NO_FOUND_ID, HTTPStatus.NOT_FOUND
+            InvalidMessages.ERROR_NO_FOUND_SHORT, HTTPStatus.NOT_FOUND
         )
     return jsonify({"url": url_map.original}), HTTPStatus.OK

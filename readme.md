@@ -67,7 +67,7 @@ POST [http://127.0.0.1:5000/api/id/](http://127.0.0.1:5000/api/id/) - созда
 
 GET [http://127.0.0.1:5000/api/id/<short>/](http://127.0.0.1:5000/api/id/<short>/) - получение оригинальной ссылки
 
-### API Docs (Swagger): http://localhost/api/docs/
+### API Docs (Swagger): [http://localhost/api/docs/](http://localhost/api/docs/)
 
 ## Технологии
 
@@ -80,6 +80,6 @@ GET [http://127.0.0.1:5000/api/id/<short>/](http://127.0.0.1:5000/api/id/<short>
 ### Контакты
 Автор: Евгений Гетиков
 
-Email: zenia777@yandex.ru
+Email: [zenia777@yandex.ru](zenia777@yandex.ru)
 
 Репозиторий: [https://github.com/ysgetiko](https://github.com/ysgetiko)

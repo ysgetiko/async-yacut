@@ -1,12 +1,24 @@
+import re
+
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, MultipleFileField
 from wtforms import StringField, SubmitField, URLField
-from wtforms.validators import (DataRequired, Length, Optional, Regexp,
-                                ValidationError)
+from wtforms.validators import (
+    DataRequired,
+    Length,
+    Optional,
+    Regexp,
+    ValidationError,
+)
 
-from yacut.constants import (FORBIDDEN_SHORT, MAX_LENGTH_ORIGINAL,
-                             MAX_LENGTH_SHORT, REGEX_FOR_SHORT, FormMessages,
-                             InvalidMessages)
+from yacut.constants import (
+    ALLOWED_FOR_SHORT,
+    FORBIDDEN_SHORT,
+    MAX_LENGTH_ORIGINAL,
+    MAX_LENGTH_SHORT,
+    FormMessages,
+    InvalidMessages,
+)
 from yacut.models import URLMap
 
 
@@ -19,11 +31,11 @@ class URLMapForm(FlaskForm):
         ],
     )
     custom_id = StringField(
-        FormMessages.CUSTOM_ID_LABEL,
+        FormMessages.CUSTOM_SHORT_LABEL,
         validators=[
             Length(max=MAX_LENGTH_SHORT),
             Regexp(
-                REGEX_FOR_SHORT,
+                re.compile(f"^[{re.escape(ALLOWED_FOR_SHORT)}]+$"),
                 message=InvalidMessages.CONSTRAINS_SHORT,
             ),
             Optional(),

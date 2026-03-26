@@ -3,13 +3,13 @@ from http import HTTPStatus
 from flask import abort, flash, redirect, render_template
 
 from yacut import app, db
-from yacut.constants import InvalidMessages
+from yacut.constants import InvalidMessages, REDIRECT_FOR_SHORT
 from yacut.forms import UploadForm, URLMapForm
 from yacut.models import URLMap
 from yacut.yadisk import async_upload_files_to_yadisk
 
 
-@app.route("/<short>", endpoint="short_url")
+@app.route("/<short>", endpoint=REDIRECT_FOR_SHORT)
 def short_url(short):
     if not (url_map := URLMap.get(short)):
         abort(HTTPStatus.NOT_FOUND)
@@ -27,7 +27,6 @@ def short_url_view():
             short=form.custom_id.data,
             skip_validation=True,
         )
-        db.session.commit()
         return render_template(
             "index.html",
             form=form,
@@ -35,7 +34,6 @@ def short_url_view():
         )
     except (ValueError, RuntimeError) as e:
         # Откатываем транзакцию при ошибке
-        db.session.rollback()
         flash(str(e))
         return render_template("index.html", form=form)
 
@@ -48,7 +46,7 @@ async def upload_files_view():
 
     try:
         # Загружаем файлы на Яндекс.Диск
-        uploaded_files_url = await async_upload_files_to_yadisk(
+        urls_for_upload_files = await async_upload_files_to_yadisk(
             form.files.data
         )
     except Exception as e:
@@ -60,13 +58,12 @@ async def upload_files_view():
         shorts_link_for_download = [
             {
                 "filename": file.filename,
-                "short": URLMap.create(
-                    original=original_link, skip_validation=True
-                ).get_short_url(),
+                "short": URLMap.create(original=original_link).get_short_url(),
             }
-            for file, original_link in zip(form.files.data, uploaded_files_url)
+            for file, original_link in zip(
+                form.files.data, urls_for_upload_files
+            )
         ]
-        db.session.commit()
         return render_template(
             "download_files.html",
             form=form,
