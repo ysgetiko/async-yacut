@@ -45,9 +45,7 @@ async def upload_files_view():
 
     try:
         # Загружаем файлы на Яндекс.Диск
-        urls = await async_upload_files_to_yadisk(
-            form.files.data
-        )
+        urls = await async_upload_files_to_yadisk(form.files.data)
     except Exception as e:
         flash(str(e))
         return render_template("download_files.html", form=form)
@@ -60,11 +58,12 @@ async def upload_files_view():
                 "filename": file.filename,
                 "short": URLMap.create(
                     original=original_link,
-                    skip_commit=(index != file_count - 1)
+                    skip_commit=(index != file_count - 1),
                 ).get_short_url(),
             }
-            for index, (file, original_link) in enumerate(zip(form.files.data, urls))
-
+            for index, (file, original_link) in enumerate(
+                zip(form.files.data, urls)
+            )
         ]
         return render_template(
             "download_files.html",
