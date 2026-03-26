@@ -1,4 +1,3 @@
-import re
 import string
 
 MAX_LENGTH_ORIGINAL = 4000
